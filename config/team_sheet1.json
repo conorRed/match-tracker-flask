@@ -1,0 +1,50 @@
+{
+    "team" : "Galway",
+    "colour" : "maroon",
+    "lineup" : [
+        {
+            "line" : "fullback",
+            "players" : [
+                { "number" : "1" , "name": "Player A" },
+                { "number" : "2" , "name": "Player A" },
+                { "number" : "3" , "name": "Player A" }
+            ]
+        },
+        {
+            "line" : "fullback" ,
+            "players" : [
+                { "number" : "5" , "name": "Player A" },
+                { "number" : "6" , "name": "Player A" },
+                { "number" : "7" , "name": "Player A" }
+            ]
+        },
+
+        {
+            
+            "line" : "midfield",
+            "players" : [
+                { "number" : "8" , "name": "Player A" },
+                { "number" : "9" , "name": "Player A" }
+            ]
+
+
+        },
+
+        {
+            "line" : "halfforward",
+            "players" : [
+                { "number" : "10" , "name": "Player A" },
+                { "number" : "11" , "name": "Player A" },
+                { "number" : "12" , "name": "Player A" }
+            ]
+        },
+        {
+            "line" : "fullforward",
+            "players" : [
+                { "number" : "13" , "name": "Player A" },
+                { "number" : "14" , "name": "Player A" },
+                { "number" : "15" , "name": "Player A" }
+            ]
+        }
+    ]
+}
