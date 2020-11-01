@@ -1,50 +1,26 @@
 [
-    {
-        "event" : "Pass",
-        "outcomes" : [
-            "Lateral",
-            "Forward",
-            "Back"
-        ]
-    },
-    {
-        "event" : "Kickout",
-        "outcomes" : [
-            "Clean",
-            "Break",
-            "Sideline"
-        ]
-    },
-    {
-        "event" : "Free",
-        "outcomes" : [
-            "Point",
-            "Goal",
-            "Short"
-        ]
-    },
-    {
-        "event" : "Shot",
-        "outcomes" : [
-            "Point",
-            "Goal",
-            "Short"
-        ]
-    },
-    {
-        "event" : "Tackle",
-        "outcomes" : [
-            "Won",
-            "Foul",
-            "Card"
-        ]
-    },
-    {
-        "event" : "Turnover",
-        "outcomes" : [
-            "Kickpass",
-            "Handling",
-            "Handpass"
-        ]
-    }
+  {
+    "event": "Pass",
+    "outcomes": ["Lateral", "Forward", "Back"]
+  },
+  {
+    "event": "Kickout",
+    "outcomes": ["Clean", "Break", "Sideline"]
+  },
+  {
+    "event": "Free",
+    "outcomes": ["Point", "Goal", "Short", "Wide"]
+  },
+  {
+    "event": "Shot",
+    "outcomes": ["Point", "Goal", "Short", "Wide"]
+  },
+  {
+    "event": "Tackle",
+    "outcomes": ["Won", "Foul", "Card"]
+  },
+  {
+    "event": "Turnover",
+    "outcomes": ["Kickpass", "Handling", "Handpass"]
+  }
 ]
