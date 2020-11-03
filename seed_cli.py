@@ -12,13 +12,13 @@ def seed():
     dublin = Team(name="Dublin", colour="blue")
     db.session.add_all([galway,cork,dublin])
     db.session.commit()
-    for p in range(15): 
+    for p in range(1, 16): 
         db.session.add(Player(name="Player "+str(p), number=p, team=galway))
     db.session.commit()
-    for p in range(15): 
+    for p in range(1, 16): 
         db.session.add(Player(name="Player "+str(p), number=p, team=dublin))
     db.session.commit()
-    for p in range(15): 
+    for p in range(1, 16): 
         db.session.add(Player(name="Player "+str(p), number=p, team=cork))
     db.session.commit()
     eventsConfig = []
