@@ -26,5 +26,9 @@
   {
     "event": "Turnover",
     "outcomes": ["Kickpass", "Handling", "Handpass"]
+  },
+  {
+    "event": "Save",
+    "outcomes": ["Save"]
   }
 ]
