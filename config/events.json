@@ -8,6 +8,10 @@
     "outcomes": ["Clean", "Break", "Sideline"]
   },
   {
+    "event": "Opp Kickout",
+    "outcomes": ["Clean", "Break", "Sideline"]
+  },
+  {
     "event": "Free",
     "outcomes": ["Point", "Goal", "Short", "Wide"]
   },
