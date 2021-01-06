@@ -10,7 +10,9 @@ def seed():
     galway = Team(name="Galway", colour="maroon")
     cork = Team(name="Cork", colour="red")
     dublin = Team(name="Dublin", colour="blue")
-    db.session.add_all([galway,cork,dublin])
+    tipp = Team(name="Tipperary", colour="blue")
+    mon = Team(name="Monaghan", colour="blue")
+    db.session.add_all([galway,cork,dublin, tipp, mon])
     db.session.commit()
     for p in range(1, 16): 
         db.session.add(Player(name="Player "+str(p), number=p, team=galway))
