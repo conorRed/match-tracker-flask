@@ -4,9 +4,15 @@ from app import db
 from app.models import Team, Player, Event, Outcome
 from flask.cli import with_appcontext
 
-@click.command()
+@click.command('seed')
 @with_appcontext
 def seed():
+    Team.query.delete()
+    Event.query.delete()
+    Player.query.delete()
+    Outcome.query.delete()
+
+
     galway = Team(name="Galway", colour="maroon")
     cork = Team(name="Cork", colour="red")
     dublin = Team(name="Dublin", colour="blue")
