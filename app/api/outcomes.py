@@ -14,3 +14,21 @@ def get_outcomes():
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     data = Outcome.to_collection_dict(Outcome.query, page, per_page, 'api.get_outcomes')
     return jsonify(data)
+
+@bp.route('/outcome/<int:id>', methods=['GET'])
+def get_outcome(id):
+    return jsonify(Outcome.query.get_or_404(id).to_dict())
+
+@bp.route('/outcomes', methods=['POST'])
+def create_outcome():
+    data = request.get_json() or {}
+    if 'name' not in data or 'event_id' not in data:
+        return error_response(400, "Bad request")
+    o = Outcome()
+    o.from_dict(data)
+    db.session.add(o)
+    db.session.commit()
+    response = jsonify(o.to_dict())
+    response.status_code = 201
+    response.headers['Location'] = url_for('api.get_outcome', id=o.id)
+    return response

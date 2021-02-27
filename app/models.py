@@ -69,7 +69,7 @@ class Player(PaginatedAPIMixin, db.Model):
 class Event(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
-    outcomes = db.relationship('Outcome', backref='event', lazy='dynamic')
+    outcomes = db.relationship('Outcome', cascade="all, delete", backref='event', lazy='dynamic')
     def __repr__(self):
         return '<Event %r>' % (self.name)
 

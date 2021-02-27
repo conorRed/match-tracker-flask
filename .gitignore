@@ -3,3 +3,4 @@ static/*
 .vscode
 venv
 app.db
+.pytest_cache

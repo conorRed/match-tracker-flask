@@ -29,7 +29,6 @@ def upgrade():
     sa.Column('name', sa.String(length=50), nullable=True),
     sa.Column('colour', sa.String(length=50), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('colour'),
     sa.UniqueConstraint('name')
     )
     op.create_table('outcome',
@@ -47,8 +46,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['team_id'], ['team.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.drop_table('teams')
     op.drop_table('players')
+    op.drop_table('teams')
     # ### end Alembic commands ###
 
 

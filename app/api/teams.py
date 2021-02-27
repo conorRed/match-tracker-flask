@@ -25,8 +25,7 @@ def get_teams():
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     data = Team.to_collection_dict(Team.query, page, per_page, 'api.get_teams')
     return jsonify(data)
-
-
+    
 @bp.route('/teams', methods=['POST'])
 def create_team():
     data = request.get_json() or {}
