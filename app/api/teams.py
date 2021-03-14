@@ -16,7 +16,7 @@ def get_players(id):
     team = Team.query.get_or_404(id)
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 20, type=int), 100)
-    data = Team.to_collection_dict(team.players, page, per_page, 'api.get_players')
+    data = Team.to_collection_dict(team.players, page, per_page, 'api.get_players', id=id)
     return data
 
 @bp.route('/teams', methods=['GET'])

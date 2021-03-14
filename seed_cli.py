@@ -12,7 +12,6 @@ def seed():
     Player.query.delete()
     Outcome.query.delete()
 
-
     galway = Team(name="Galway", colour="maroon")
     cork = Team(name="Cork", colour="red")
     dublin = Team(name="Dublin", colour="blue")

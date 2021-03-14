@@ -2,7 +2,7 @@ from app import create_app, db
 import tempfile
 import os
 import pytest
-from app.models import Team, Event, Outcome
+from app.models import Team, Event, Outcome, Player
 from config import Config
 
 class TestConfig(Config):
@@ -34,6 +34,24 @@ def add_team():
 
             db.session.delete(removals[0])
             db.session.commit()
+
+@pytest.fixture(scope="function")
+def add_player():
+    with app.app_context():
+            removals = []
+            def _add_player(team_id, n, no):
+                # now add outcome to that event
+                player = Player(name=n, number=no, team_id=team_id)
+                db.session.add(player)
+                db.session.commit()
+                removals.append(player)
+                return player
+
+            yield _add_player
+
+            for removal in removals:
+                db.session.delete(removal)
+                db.session.commit()
 
 @pytest.fixture(scope="function")
 def add_event():
