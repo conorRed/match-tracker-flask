@@ -27,3 +27,21 @@ def create_player():
     response.status_code = 201
     response.headers['Location'] = url_for('api.get_player', id=p.id)
     return response
+
+@bp.route('/players', methods=['POST'])
+def create_players():
+    data = request.get_json() or {}
+    team_id = data[0]['team_id']
+    for player in data:
+        if 'team_id' not in player:
+            return error_response(400, "Bad request Add the team Id")
+        if 'name' not in player or 'number' not in player:
+            return error_response(400, "Bad request missing fields")
+        p = Player()
+        p.from_dict(player)
+        db.session.add(p)
+        db.session.commit()
+    response = jsonify("players created")
+    response.status_code = 201
+    response.headers['Location'] = url_for('api.get_players', id=team_id)
+    return response

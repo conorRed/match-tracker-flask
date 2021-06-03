@@ -26,3 +26,12 @@ class TestPlayers:
         TestPlayers.mock_player["team_id"] = t.id
         response = client.post('/api/player', data=json.dumps(TestPlayers.mock_player), mimetype='application/json')
         assert response.status_code == 201
+
+    def test_create_players(self, client, add_team):
+        players = []
+        t = add_team(TestPlayers.mock_team["name"], TestPlayers.mock_team["colour"])
+        players = []
+        for i in range(0, 10):
+            players.append({"name" : "Player A", "number" : i, "team_id": t.id})
+        response = client.post('/api/players', data=json.dumps(players), mimetype='application/json')
+        assert response.status_code == 201
