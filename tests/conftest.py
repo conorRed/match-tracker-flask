@@ -2,12 +2,18 @@ from app import create_app, db
 import tempfile
 import os
 import pytest
-from app.models import Team, Event, Outcome, Player
+from app.models import Team, Event, Outcome, Player, User, Role
 from config import Config
+from flask_jwt_extended import create_access_token
+from flask_security.utils import get_hmac
+from flask_security import SQLAlchemyUserDatastore
 
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    JWT_SECRET_KEY = "test secret"
+    SECURITY_PASSWORD_SALT='salt'
+    
 
 app = create_app(TestConfig)
 
@@ -18,6 +24,26 @@ with app.app_context():
 def client():
     with app.test_client() as client:
         yield client
+
+@pytest.fixture(scope="function")
+def access_token_for_email():
+    def _create_token(email):
+        return create_access_token(email)
+
+    yield _create_token
+
+@pytest.fixture(scope="function")
+def add_user():
+    with app.app_context():
+            removals = []
+            user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+            def _add_user(e, p):
+                password = get_hmac(p)
+                user = User(email=e, password=password)
+                user_datastore.create_user(email=e, password=password)
+                return user
+
+            yield _add_user
 
 @pytest.fixture(scope="function")
 def add_team():

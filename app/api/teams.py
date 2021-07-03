@@ -5,7 +5,7 @@ from flask import jsonify
 from flask import request
 from flask import url_for
 from app.api.errors import error_response
-
+from flask_jwt_extended import jwt_required
 
 @bp.route('/teams/<int:id>', methods=['GET'])
 def get_team(id):
@@ -20,6 +20,7 @@ def get_players(id):
     return data
 
 @bp.route('/teams', methods=['GET'])
+@jwt_required
 def get_teams():
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 20, type=int), 100)
