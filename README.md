@@ -19,3 +19,10 @@
 * To run a migration and make a schema change run `flask db migrate -m <message-detailing-changes>`
 * Then to push those to the database run `flask db upgrade`
 
+# Deploying
+
+* `git pull` inside the directory on the server
+* `sudo supervisorctl stop matchtracker` 
+* `flask db upgrade` make sure that any new migrations are caught
+* `sudo supervisorctl start matchtracker` 
+

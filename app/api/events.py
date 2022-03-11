@@ -1,42 +1,32 @@
+from flask import jsonify, request, url_for
 
-from app.api import bp
-from app.models import Event
 from app import db
-from flask import jsonify
-from flask import request
-from flask import url_for
+from app.api import bp
 from app.api.errors import error_response
+from app.models import Event
+from marshmallow import Schema, fields
 
+class EventCreationSchema(Schema):
+    name = fields.Str(required=True)
+    game_id = fields.Int(required=True)
+    timestamp = fields.Str(require=True)
+    pitchzone  = fields.Str(required=True)
+    event_option_id = fields.Int(required=True)
+    outcome_id = fields.Int(required=True)
 
-@bp.route('/events', methods=['GET'])
-def get_events():
-    page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', 10, type=int), 100)
-    data = Event.to_collection_dict(Event.query, page, per_page, 'api.get_events')
-    return jsonify(data)
-
-@bp.route('/events/<int:id>', methods=['GET'])
-def get_event_by_id(id):
-    return jsonify(Event.query.get_or_404(id).to_dict())
-
-@bp.route('/events/<int:id>/outcomes', methods=['GET'])
-def get_event_outcomes(id):
-    event = Event.query.get_or_404(id)
-    page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', 10, type=int), 100)
-    data = Event.to_collection_dict(event.outcomes, page, per_page, 'api.get_event_outcomes', id=id)
-    return jsonify(data)
+event_creation_schema = EventCreationSchema()
 
 @bp.route('/events', methods=['POST'])
 def create_event():
     data = request.get_json() or {}
-    if 'name' not in data:
-        return error_response(400, "Bad request")
+    errors = event_creation_schema.validate(data)
+    if errors:
+        return error_response(400, errors)
     e = Event()
     e.from_dict(data)
+    print(data)
     db.session.add(e)
     db.session.commit()
     response = jsonify(e.to_dict())
     response.status_code = 201
-    response.headers['Location'] = url_for('api.get_events', id=e.id)
     return response

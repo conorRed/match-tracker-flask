@@ -1,11 +1,32 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_security import RoleMixin, UserMixin
-from flask_security.utils import verify_password, get_hmac
+from flask_security import (
+    Security,
+    SQLAlchemyUserDatastore,
+    hash_password,
+)
+from flask_security.models import fsqla_v2 as fsqla
 from app import db
 from flask import url_for
 
 
 class PaginatedAPIMixin(object):
+    @staticmethod
+    def to_collection_with_scheme(query, scheme, page, per_page, endpoint, **kwargs):
+        resources = query.paginate(page, per_page, False)
+        data = {
+            'items' : [scheme.dump(item) for item in resources.items],
+            '_meta': {
+                'page': page,
+                'per_page': per_page,
+                'total_pages': resources.pages,
+                'total_items': resources.total
+            },
+            '_links': {
+                'self': url_for(endpoint, page=page, per_page=per_page,
+                                **kwargs)
+            }
+        }
+        return data
     @staticmethod
     def to_collection_dict(query, page, per_page, endpoint, **kwargs):
         resources = query.paginate(page, per_page, False)
@@ -24,42 +45,41 @@ class PaginatedAPIMixin(object):
         }
         return data
 
-roles_users = db.Table('roles_users',
-        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+fsqla.FsModels.set_db_info(db)
 
-class Role(db.Model, RoleMixin):
+class Role(db.Model, fsqla.FsRoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
+    def to_dict(self):
+        data = {
+            "name" :      self.email,
+            "description" : self.active,
+        }
+        return data
+    
+    def from_dict(self, data):
+        for field in ["name"]:
+            if field in data:
+                setattr(self, field, data[field])
 
-class User(db.Model, UserMixin):
+    def __repr__(self):
+        return '<Role %r>' % (self.name)
+
+class User(db.Model, fsqla.FsUserMixin, PaginatedAPIMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
-    roles = db.relationship('Role', secondary=roles_users,
-                            backref=db.backref('users', lazy='dynamic'))
-
-    @staticmethod
-    def authenticate(username, password):
-        user = User.query.filter(username=username).scalar()
-        if verify_password(user.password, get_hmac(password)):
-                return user
-
-    def authenticate(self, password):
-        return verify_password(get_hmac(self.password), get_hmac(password))
-
-    @staticmethod
-    def identify(payload):
-        return User.query.filter(User.id == payload['identity']).scalar()
+    games = db.relationship('Game', backref='game', lazy='dynamic')
 
     def to_dict(self):
         data = {
+            "id": self.id,
             "email" :      self.email,
             "active" : self.active,
-            "roles" : self.roles
+            "create_time": self.create_datetime
         }
         return data
     
@@ -70,6 +90,33 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return '<User %r>' % (self.email)
+
+class Game(PaginatedAPIMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=False)
+    home_team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    away_team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    events = db.relationship('Event', backref='game', lazy='dynamic')
+    home_team = db.relationship('Team', lazy='select', foreign_keys=[home_team_id])
+    away_team = db.relationship('Team', foreign_keys=[away_team_id])
+
+    def __repr__(self):
+        return '<Game %r>' % (self.name)
+
+    def to_dict(self):
+        data = {
+            "id" : self.id,
+            "name" : self.name,
+            "user_id" : self.user_id, 
+            "home_team": self.home_team_id,
+        }
+        return data
+
+    def from_dict(self, data):
+        for field in ["name", "timestamp", "user_id", "home_team_id", "away_team_id"]:
+            if field in data:
+                setattr(self, field, data[field])
 
 class Team(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -115,10 +162,40 @@ class Player(PaginatedAPIMixin, db.Model):
     def __repr__(self):
         return '<Player %r>' % (self.name)
 
-class Event(PaginatedAPIMixin, db.Model):
+class EventOption(PaginatedAPIMixin, db.Model):
+    __tablename__ = 'event_option'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
-    outcomes = db.relationship('Outcome', cascade="all, delete", backref='event', lazy='dynamic')
+    outcomes = db.relationship('Outcome', backref="event_option",
+    lazy='dynamic')
+    def __repr__(self):
+        return '<EventOutcome %r>' % (self.name)
+
+    def to_dict(self):
+        data = {
+            "id" : self.id,
+            "name" : self.name,
+            "outcomes" : self.outcomes
+        }
+        return data
+    
+    def from_dict(self, data):
+        for field in ["name", "game_id"]:
+            if field in data:
+                setattr(self, field, data[field])
+
+class Event(PaginatedAPIMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+    event_option_id = db.Column(db.Integer, db.ForeignKey('event_option.id'))
+    outcome_id = db.Column(db.Integer, db.ForeignKey('outcome.id'))
+    timestamp = db.Column(db.String(10), unique=False)
+    pitchzone = db.Column(db.String(10))
+
+    outcome = db.relationship("Outcome")
+    event_option = db.relationship("EventOption")
+
     def __repr__(self):
         return '<Event %r>' % (self.name)
 
@@ -130,14 +207,15 @@ class Event(PaginatedAPIMixin, db.Model):
         return data
     
     def from_dict(self, data):
-        for field in ["name"]:
+        for field in ["name", "game_id", "event_option_id", "outcome_id", "timestamp", "pitchzone"]:
             if field in data:
                 setattr(self, field, data[field])
 
 class Outcome(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
+    event_option_id = db.Column(db.Integer, db.ForeignKey('event_option.id'), nullable=False)
+
     def __repr__(self):
         return '<Outcome %r>' % (self.name)
 
@@ -145,11 +223,11 @@ class Outcome(PaginatedAPIMixin, db.Model):
         data = {
             "id":         self.id,
             "name":       self.name,
-            "event_id":   self.event_id
+            "event_id":   self.event_option_id
         }
         return data
         
     def from_dict(self, data):
-        for field in ["name", "event_id"]:
+        for field in ["name", "event_option_id"]:
             if field in data:
                 setattr(self, field, data[field])

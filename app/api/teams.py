@@ -17,10 +17,9 @@ def get_players(id):
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 20, type=int), 100)
     data = Team.to_collection_dict(team.players, page, per_page, 'api.get_players', id=id)
-    return data
+    return jsonify(data)
 
 @bp.route('/teams', methods=['GET'])
-@jwt_required
 def get_teams():
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 20, type=int), 100)

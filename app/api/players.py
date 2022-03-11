@@ -1,4 +1,3 @@
-
 from app.api import bp
 from app.models import Player
 from app import db
@@ -6,7 +5,6 @@ from flask import jsonify
 from flask import request
 from flask import url_for
 from app.api.errors import error_response
-
 
 @bp.route('/players/<int:id>', methods=['GET'])
 def get_player(id):
@@ -43,5 +41,4 @@ def create_players():
         db.session.commit()
     response = jsonify("players created")
     response.status_code = 201
-    response.headers['Location'] = url_for('api.get_players', id=team_id)
     return response

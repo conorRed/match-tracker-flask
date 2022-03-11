@@ -20,7 +20,6 @@ class TestPlayers:
         assert TestPlayers.mock_player["name"] == response_obj["items"][0]["name"]
         assert TestPlayers.mock_player["number"] == response_obj["items"][0]["number"]
 
-
     def test_create_player(self, client, add_team):
         t = add_team(TestPlayers.mock_team["name"], TestPlayers.mock_team["colour"])
         TestPlayers.mock_player["team_id"] = t.id
