@@ -6,6 +6,7 @@ from flask_security import (
 )
 from flask_security.models import fsqla_v2 as fsqla
 from app import db
+from app import metadata
 from flask import url_for
 
 
@@ -162,59 +163,13 @@ class Player(PaginatedAPIMixin, db.Model):
     def __repr__(self):
         return '<Player %r>' % (self.name)
 
-class EventOption(PaginatedAPIMixin, db.Model):
-    __tablename__ = 'event_option'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True)
-    outcomes = db.relationship('Outcome', backref="event_option",
-    lazy='dynamic')
-    def __repr__(self):
-        return '<EventOutcome %r>' % (self.name)
-
-    def to_dict(self):
-        data = {
-            "id" : self.id,
-            "name" : self.name,
-            "outcomes" : self.outcomes
-        }
-        return data
-    
-    def from_dict(self, data):
-        for field in ["name", "game_id"]:
-            if field in data:
-                setattr(self, field, data[field])
-
-class Event(PaginatedAPIMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
-    event_option_id = db.Column(db.Integer, db.ForeignKey('event_option.id'))
-    outcome_id = db.Column(db.Integer, db.ForeignKey('outcome.id'))
-    timestamp = db.Column(db.String(10), unique=False)
-    pitchzone = db.Column(db.String(10))
-
-    outcome = db.relationship("Outcome")
-    event_option = db.relationship("EventOption")
-
-    def __repr__(self):
-        return '<Event %r>' % (self.name)
-
-    def to_dict(self):
-        data = {
-            "id" : self.id,
-            "name" : self.name
-        }
-        return data
-    
-    def from_dict(self, data):
-        for field in ["name", "game_id", "event_option_id", "outcome_id", "timestamp", "pitchzone"]:
-            if field in data:
-                setattr(self, field, data[field])
-
+association_table = db.Table('outcome_to_event_option', 
+    db.Column('outcome_id', db.ForeignKey('outcome.id')),
+    db.Column('event_option_id', db.ForeignKey('event_option.id'))
+)
 class Outcome(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    event_option_id = db.Column(db.Integer, db.ForeignKey('event_option.id'), nullable=False)
 
     def __repr__(self):
         return '<Outcome %r>' % (self.name)
@@ -231,3 +186,55 @@ class Outcome(PaginatedAPIMixin, db.Model):
         for field in ["name", "event_option_id"]:
             if field in data:
                 setattr(self, field, data[field])
+
+class EventOption(PaginatedAPIMixin, db.Model):
+    __tablename__ = 'event_option'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+    outcomes = db.relationship('Outcome', secondary=association_table, backref="event_options")
+    def __repr__(self):
+        return '<EventOutcome %r>' % (self.name)
+
+    def to_dict(self):
+        data = {
+            "id" : self.id,
+            "name" : self.name,
+            "outcomes" : self.outcomes
+        }
+        return data
+    
+    def from_dict(self, data):
+        for field in ["name", "game_id"]:
+            if field in data:
+                setattr(self, field, data[field])
+
+
+class Event(PaginatedAPIMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+    event_option_id = db.Column(db.Integer, db.ForeignKey('event_option.id'))
+    outcome_id = db.Column(db.Integer, db.ForeignKey('outcome.id'))
+    timestamp = db.Column(db.String(10), unique=False)
+    pitchzone = db.Column(db.String(10))
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+
+    outcome = db.relationship("Outcome")
+    event_option = db.relationship("EventOption")
+    team = db.relationship("Team")
+
+    def __repr__(self):
+        return '<Event %r>' % (self.name)
+
+    def to_dict(self):
+        data = {
+            "id" : self.id,
+            "name" : self.name
+        }
+        return data
+    
+    def from_dict(self, data):
+        for field in ["name", "game_id", "team_id", "event_option_id", "outcome_id", "timestamp", "pitchzone"]:
+            if field in data:
+                setattr(self, field, data[field])
+

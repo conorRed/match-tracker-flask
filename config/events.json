@@ -1,34 +1,36 @@
-[
-  {
-    "event": "Pass",
-    "outcomes": ["Lateral", "Forward", "Back"]
-  },
-  {
-    "event": "Kickout",
-    "outcomes": ["Clean", "Break", "Sideline"]
-  },
-  {
-    "event": "Opp Kickout",
-    "outcomes": ["Clean", "Break", "Sideline"]
-  },
-  {
-    "event": "Free",
-    "outcomes": ["Point", "Goal", "Short", "Wide"]
-  },
-  {
-    "event": "Shot",
-    "outcomes": ["Point", "Goal", "Short", "Wide"]
-  },
-  {
-    "event": "Tackle",
-    "outcomes": ["Won", "Foul", "Card"]
-  },
-  {
-    "event": "Turnover",
-    "outcomes": ["Kickpass", "Handling", "Handpass"]
-  },
-  {
-    "event": "Save",
-    "outcomes": ["Save"]
-  }
-]
+{
+    "outcomes": [
+        {"name": "Lateral"},
+        {"name": "Forward"},
+        {"name": "Back"},
+        {"name": "Clean"},
+        {"name": "Break"},
+        {"name": "Sideline"},
+        {"name": "Point"},
+        {"name": "Goal"},
+        {"name": "Short"},
+        {"name": "Wide"},
+        {"name": "Won"},
+        {"name": "Foul"},
+        {"name": "Card"},
+        {"name": "Kickpass"},
+        {"name": "Handling"},
+        {"name": "Handpass"},
+        {"name": "Save"},
+        {"name": "Black"},
+        {"name": "Yellow"},
+        {"name": "Red"}
+
+    ], 
+    "event_options": [
+        {"name": "Pass", "outcomes": ["Lateral", "Forward", "Back"]},
+        {"name": "Kickout", "outcomes" : ["Clean", "Break", "Sideline"]},
+        {"name": "Opp Kickout", "outcomes" : ["Clean", "Break", "Sideline"]},
+        {"name": "Free", "outcomes" : ["Point", "Goal", "Short", "Wide"]},
+        {"name": "Shot", "outcomes" : ["Point", "Goal", "Short", "Wide"]},
+        {"name": "Tackle", "outcomes": ["Won", "Foul", "Card"]},
+        {"name": "Turnover", "outcomes": ["Kickpass", "Handling", "Handpass"]},
+        {"name": "Save", "outcomes": ["Save"]}, 
+        {"name": "Card", "outcomes": ["Black", "Yellow", "Red"]}
+    ]
+}

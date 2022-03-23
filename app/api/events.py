@@ -9,6 +9,7 @@ from marshmallow import Schema, fields
 class EventCreationSchema(Schema):
     name = fields.Str(required=True)
     game_id = fields.Int(required=True)
+    team_id = fields.Int(required=True)
     timestamp = fields.Str(require=True)
     pitchzone  = fields.Str(required=True)
     event_option_id = fields.Int(required=True)
@@ -24,7 +25,6 @@ def create_event():
         return error_response(400, errors)
     e = Event()
     e.from_dict(data)
-    print(data)
     db.session.add(e)
     db.session.commit()
     response = jsonify(e.to_dict())

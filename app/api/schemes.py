@@ -9,21 +9,22 @@ class OutcomeSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Outcome
 
-
 class EventOptionSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = EventOption
     outcomes = Nested(OutcomeSchema, many=True)
+
+
+class TeamSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Team
 
 class EventSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Event
     event_option = Nested(EventOptionSchema)
     outcome = Nested(OutcomeSchema)
-
-class TeamSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = Team
+    team = Nested(TeamSchema)
 
 class GameSchema(SQLAlchemyAutoSchema):
     class Meta:

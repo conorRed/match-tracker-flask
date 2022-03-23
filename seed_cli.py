@@ -40,13 +40,17 @@ def seed():
     with open("./config/events.json", "r") as read_file:
         eventsConfig = json.load(read_file)
     event_ids = []
-    for event in eventsConfig:
-        e = EventOption(name=event["event"])
-        db.session.add(e)
-        db.session.commit()
+    for outcome in eventsConfig["outcomes"]:
+        db.session.add(Outcome(name=outcome["name"]))
+    db.session.commit()   
+    for event in eventsConfig["event_options"]:
+        e = EventOption(name=event["name"])
         for outcome in event["outcomes"]:
-            db.session.add(Outcome(name=outcome, event_option_id=e.id))
-            db.session.commit()   
+            o = db.session.query(Outcome).filter_by(name=outcome).first()
+            print(o.name)
+            e.outcomes.append(o)
+        db.session.add(e)
+        db.session.commit()   
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
     user_datastore.find_or_create_role(
         name="admin",

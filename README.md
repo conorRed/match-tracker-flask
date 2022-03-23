@@ -23,6 +23,19 @@
 
 * `git pull` inside the directory on the server
 * `sudo supervisorctl stop matchtracker` 
+
+* Create a virtual environment if one does not already exists (need to sync up Python versions).
+* `python3.7 -m venv <name>(lir3.7)`
+* `pip install -r requirements.txt`
 * `flask db upgrade` make sure that any new migrations are caught
 * `sudo supervisorctl start matchtracker` 
+
+# Accessing Database on server 
+
+* If you forget the password (which I know you will)
+* `sudo -u postgres`
+* `psql`
+* `postgres=# ALTER USER postgres PASSWORD 'mynewpassword';`
+
+* `psql -d match-tracker -h localhost -U match-tracker-flask`
 
