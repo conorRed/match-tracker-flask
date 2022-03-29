@@ -1,4 +1,13 @@
 {
+    "teams" : [
+        { "name": "Galway", "colour" : "maroon"},
+        { "name": "Cork", "colour" : "red"},
+        { "name": "Dublin", "colour" : "blue"},
+        { "name": "Tipperary", "colour" : "DarkBlue"},
+        { "name": "Monaghan", "colour" : "CornflowerBlue"},
+        { "name": "Team A", "colour" : "black"},
+        { "name": "Team B", "colour" : "black"}
+    ], 
     "outcomes": [
         {"name": "Lateral"},
         {"name": "Forward"},

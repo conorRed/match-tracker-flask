@@ -29,7 +29,6 @@ def get_games():
 @jwt_required()
 def get_game(id):
     game_schema = GameSchema()
-    print(game_schema.dump(Game.query.get_or_404(id)))
     return game_schema.dump(Game.query.get_or_404(id))
     
 class GameCreationSchema(Schema):

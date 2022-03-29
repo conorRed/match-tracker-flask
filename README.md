@@ -30,6 +30,12 @@
 * `flask db upgrade` make sure that any new migrations are caught
 * `sudo supervisorctl start matchtracker` 
 
+# Database
+
+* Create a database with `createdb <name>` and  test out migrations by changing `export DATABASE_URL=postgresql+psycopg2://conor:root@localhost:5432/<name>`
+* The primary id's might need to be reset to 1, rather than creating a new db. 
+* Run ` ALTER SEQUENCE "<table_name>_id_seq" RESTART;` for the tables that need to be reset.
+ 
 # Accessing Database on server 
 
 * If you forget the password (which I know you will)

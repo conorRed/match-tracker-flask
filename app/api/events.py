@@ -10,6 +10,7 @@ class EventCreationSchema(Schema):
     name = fields.Str(required=True)
     game_id = fields.Int(required=True)
     team_id = fields.Int(required=True)
+    player_id = fields.Int(required=True)
     timestamp = fields.Str(require=True)
     pitchzone  = fields.Str(required=True)
     event_option_id = fields.Int(required=True)

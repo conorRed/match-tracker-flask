@@ -1,7 +1,7 @@
 import os
 import click
 from app import db
-from app.models import Team, Player, EventOption, Outcome, User, Role
+from app.models import Team, Player, EventOption, Outcome, User, Role, Game
 from flask_security import SQLAlchemyUserDatastore
 from flask_security import hash_password
 from flask.cli import with_appcontext
@@ -9,37 +9,18 @@ from flask.cli import with_appcontext
 @click.command('seed')
 @with_appcontext
 def seed():
-    Team.query.delete()
-    EventOption.query.delete()
-    Player.query.delete()
-    Outcome.query.delete()
-
-    galway = Team(name="Galway", colour="maroon")
-    cork = Team(name="Cork", colour="red")
-    dublin = Team(name="Dublin", colour="blue")
-    tipp = Team(name="Tipperary", colour="DarkBlue")
-    mon = Team(name="Monaghan", colour="CornflowerBlue")
-    db.session.add_all([galway,cork,dublin, tipp, mon])
-    db.session.commit()
-    for p in range(1, 16): 
-        db.session.add(Player(name="Player "+str(p), number=p, team=galway))
-    db.session.commit()
-    for p in range(1, 16): 
-        db.session.add(Player(name="Player "+str(p), number=p, team=dublin))
-    db.session.commit()
-    for p in range(1, 16): 
-        db.session.add(Player(name="Player "+str(p), number=p, team=cork))
-    for p in range(1, 16): 
-        db.session.add(Player(name="Player "+str(p), number=p, team=mon))
-    db.session.commit()
-    for p in range(1, 16): 
-        db.session.add(Player(name="Player "+str(p), number=p, team=tipp))
-    db.session.commit()
     eventsConfig = []
     import json
     with open("./config/events.json", "r") as read_file:
         eventsConfig = json.load(read_file)
     event_ids = []
+    for team in eventsConfig["teams"]:
+        t = Team(name=team["name"], colour=team["colour"])
+        db.session.add(t)
+        for p in range(1, 16): 
+            db.session.add(Player(name="Player "+str(p), number=p, team=t))
+        db.session.commit()
+
     for outcome in eventsConfig["outcomes"]:
         db.session.add(Outcome(name=outcome["name"]))
     db.session.commit()   
@@ -47,7 +28,6 @@ def seed():
         e = EventOption(name=event["name"])
         for outcome in event["outcomes"]:
             o = db.session.query(Outcome).filter_by(name=outcome).first()
-            print(o.name)
             e.outcomes.append(o)
         db.session.add(e)
         db.session.commit()   

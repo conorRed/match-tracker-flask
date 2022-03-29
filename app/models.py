@@ -98,8 +98,9 @@ class Game(PaginatedAPIMixin, db.Model):
     home_team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     away_team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    events = db.relationship('Event', backref='game', lazy='dynamic')
-    home_team = db.relationship('Team', lazy='select', foreign_keys=[home_team_id])
+    events = db.relationship('Event', backref='game', lazy='dynamic',
+    cascade='all, delete', passive_deletes=True)
+    home_team = db.relationship('Team', foreign_keys=[home_team_id])
     away_team = db.relationship('Team', foreign_keys=[away_team_id])
 
     def __repr__(self):
@@ -123,7 +124,8 @@ class Team(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
     colour = db.Column(db.String(50), unique=False)
-    players = db.relationship('Player', backref='team', lazy='dynamic')
+    players = db.relationship('Player', backref='team', lazy='dynamic',
+            cascade='all, delete', passive_deletes=True)
 
     def __repr__(self):
         return '<Team %r>' % (self.name)
@@ -145,7 +147,7 @@ class Player(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     number = db.Column(db.Integer) 
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id', ondelete="CASCADE"))
 
     def to_dict(self):
         data = {
@@ -164,8 +166,8 @@ class Player(PaginatedAPIMixin, db.Model):
         return '<Player %r>' % (self.name)
 
 association_table = db.Table('outcome_to_event_option', 
-    db.Column('outcome_id', db.ForeignKey('outcome.id')),
-    db.Column('event_option_id', db.ForeignKey('event_option.id'))
+    db.Column('outcome_id', db.ForeignKey('outcome.id', ondelete="CASCADE")),
+    db.Column('event_option_id', db.ForeignKey('event_option.id', ondelete="CASCADE"))
 )
 class Outcome(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -212,16 +214,18 @@ class EventOption(PaginatedAPIMixin, db.Model):
 class Event(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id', ondelete='CASCADE'))
     event_option_id = db.Column(db.Integer, db.ForeignKey('event_option.id'))
     outcome_id = db.Column(db.Integer, db.ForeignKey('outcome.id'))
     timestamp = db.Column(db.String(10), unique=False)
     pitchzone = db.Column(db.String(10))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    player_id = db.Column(db.Integer, db.ForeignKey('player.id'))
 
     outcome = db.relationship("Outcome")
     event_option = db.relationship("EventOption")
     team = db.relationship("Team")
+    player = db.relationship("Player")
 
     def __repr__(self):
         return '<Event %r>' % (self.name)
@@ -234,7 +238,7 @@ class Event(PaginatedAPIMixin, db.Model):
         return data
     
     def from_dict(self, data):
-        for field in ["name", "game_id", "team_id", "event_option_id", "outcome_id", "timestamp", "pitchzone"]:
+        for field in ["name", "game_id", "team_id", "player_id", "event_option_id", "outcome_id", "timestamp", "pitchzone"]:
             if field in data:
                 setattr(self, field, data[field])
 
