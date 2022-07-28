@@ -3,19 +3,25 @@
     "colour" : "maroon",
     "lineup" : [
         {
+            "line" : "GoalKeeper",
+            "players" : [
+                { "number" : "1" , "name": "Player A", "position": "GoalKeeper"}
+            ]
+        },
+        {
             "line" : "fullback",
             "players" : [
-                { "number" : "1" , "name": "Player A" },
-                { "number" : "2" , "name": "Player A" },
-                { "number" : "3" , "name": "Player A" }
+                { "number" : "2" , "name": "Player A", "position": "CornerBackLeft"},
+                { "number" : "3" , "name": "Player A", "position": "FullBack"},
+                { "number" : "4" , "name": "Player A", "position": "CornerBackRight"}
             ]
         },
         {
             "line" : "fullback" ,
             "players" : [
-                { "number" : "5" , "name": "Player A" },
-                { "number" : "6" , "name": "Player A" },
-                { "number" : "7" , "name": "Player A" }
+                { "number" : "5" , "name": "Player A", "position": "WingBackLeft"},
+                { "number" : "6" , "name": "Player A", "position": "CenterBack"},
+                { "number" : "7" , "name": "Player A", "position": "WingBackRight"}
             ]
         },
 
@@ -23,8 +29,8 @@
             
             "line" : "midfield",
             "players" : [
-                { "number" : "8" , "name": "Player A" },
-                { "number" : "9" , "name": "Player A" }
+                { "number" : "8" , "name": "Player A", "position": "Midfield1" },
+                { "number" : "9" , "name": "Player A", "position": "Midfield2" }
             ]
 
 
@@ -33,17 +39,27 @@
         {
             "line" : "halfforward",
             "players" : [
-                { "number" : "10" , "name": "Player A" },
-                { "number" : "11" , "name": "Player A" },
-                { "number" : "12" , "name": "Player A" }
+                { "number" : "10" , "name": "Player A", "position": "WingForwardLeft"},
+                { "number" : "11" , "name": "Player A", "position": "CenterForward"},
+                { "number" : "12" , "name": "Player A", "position": "WingForwardRight"}
             ]
         },
         {
             "line" : "fullforward",
             "players" : [
-                { "number" : "13" , "name": "Player A" },
-                { "number" : "14" , "name": "Player A" },
-                { "number" : "15" , "name": "Player A" }
+                { "number" : "13" , "name": "Player A", "position": "CornerForwardLeft"},
+                { "number" : "14" , "name": "Player A", "position": "FullForward"},
+                { "number" : "15" , "name": "Player A", "position": "CornerForwardRight"}
+            ]
+        },
+        {
+            "line" : "bench",
+            "players" : [
+                { "number" : "16" , "name": "Player A", "position": "sub"},
+                { "number" : "17" , "name": "Player A", "position": "sub"},
+                { "number" : "18" , "name": "Player A", "position": "sub"},
+                { "number" : "19" , "name": "Player A", "position": "sub"},
+                { "number" : "20" , "name": "Player A", "position": "sub"}
             ]
         }
     ]

@@ -7,6 +7,7 @@ Create Date: 2022-03-26 14:09:11.974826
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.sql import func
 
 
 # revision identifiers, used by Alembic.
@@ -31,7 +32,7 @@ def upgrade():
     )
     op.create_table('role',
     sa.Column('permissions', sa.UnicodeText(), nullable=True),
-    sa.Column('update_datetime', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+    sa.Column('update_datetime', sa.DateTime(), server_default=func.now(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=80), nullable=True),
     sa.Column('description', sa.String(length=255), nullable=True),
@@ -55,8 +56,8 @@ def upgrade():
     sa.Column('tf_primary_method', sa.String(length=64), nullable=True),
     sa.Column('tf_totp_secret', sa.String(length=255), nullable=True),
     sa.Column('tf_phone_number', sa.String(length=128), nullable=True),
-    sa.Column('create_datetime', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
-    sa.Column('update_datetime', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+    sa.Column('create_datetime', sa.DateTime(), server_default=func.now(), nullable=False),
+    sa.Column('update_datetime', sa.DateTime(), server_default=func.now(), nullable=False),
     sa.Column('username', sa.String(length=255), nullable=True),
     sa.Column('us_totp_secrets', sa.Text(), nullable=True),
     sa.Column('us_phone_number', sa.String(length=128), nullable=True),

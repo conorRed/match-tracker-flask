@@ -148,17 +148,19 @@ class Player(PaginatedAPIMixin, db.Model):
     name = db.Column(db.String(50))
     number = db.Column(db.Integer) 
     team_id = db.Column(db.Integer, db.ForeignKey('team.id', ondelete="CASCADE"))
+    position = db.Column(db.String(50))
 
     def to_dict(self):
         data = {
             "id" :      self.id,
             "name" :   self.name,
-            "number" : self.number
+            "number" : self.number, 
+            "position" : self.position
         }
         return data
     
     def from_dict(self, data):
-        for field in ["name", "number", "team_id"]:
+        for field in ["name", "number", "team_id", "position"]:
             if field in data:
                 setattr(self, field, data[field])
 

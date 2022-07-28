@@ -13,14 +13,17 @@ def seed():
     import json
     with open("./config/events.json", "r") as read_file:
         eventsConfig = json.load(read_file)
+    with open("./config/team_sheet1.json", "r") as read_file:
+        teamsConfig = json.load(read_file)
     event_ids = []
     for team in eventsConfig["teams"]:
         t = Team(name=team["name"], colour=team["colour"])
         db.session.add(t)
-        for p in range(1, 16): 
-            db.session.add(Player(name="Player "+str(p), number=p, team=t))
-        db.session.commit()
-
+        for line in teamsConfig["lineup"]:
+            for player in line["players"]:
+                db.session.add(Player(name=str(player["name"]),
+                    number=player["number"], position=player["position"], team=t))
+                db.session.commit()
     for outcome in eventsConfig["outcomes"]:
         db.session.add(Outcome(name=outcome["name"]))
     db.session.commit()   

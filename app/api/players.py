@@ -26,6 +26,23 @@ def create_player():
     response.headers['Location'] = url_for('api.get_player', id=p.id)
     return response
 
+@bp.route('/players/<int:id>', methods=['PUT'])
+def update_player(id):
+    print(request.method)
+    data = request.get_json() or {}
+    player = Player.query.get_or_404(id)
+    if 'team_id' not in data:
+        return error_response(400, "Bad request Add the team Id")
+    if 'position' not in data:
+        return error_response(400, "Bad request missing fields")
+    player.from_dict(data)
+    db.session.add(player)
+    db.session.commit()
+    response = jsonify(player.to_dict())
+    response.status_code = 201
+    response.headers['Location'] = url_for('api.get_player', id=player.id)
+    return response
+
 @bp.route('/players', methods=['POST'])
 def create_players():
     data = request.get_json() or {}
